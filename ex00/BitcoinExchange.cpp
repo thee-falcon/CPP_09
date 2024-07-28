@@ -6,7 +6,7 @@
 /*   By: omakran <omakran@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 20:39:53 by omakran           #+#    #+#             */
-/*   Updated: 2024/07/28 21:42:37 by omakran          ###   ########.fr       */
+/*   Updated: 2024/07/28 22:24:54 by omakran          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,14 @@ void    BitcoinExchange::processInputFile(std::string const &filename) {
         exit (1);
     }
     std::string line;
-    std::getline(file, line); // skip the first line (date, value)
     while (std::getline(file, line)) {
         std::stringstream ss(line);
         std::string date, valueStr;
 
         if (std::getline(ss, date, '|') && std::getline(ss, valueStr, '|')) {
             try {
-                float value = std::stof(valueStr);
-                if (value > 1000) {
+                double value = std::strtod(valueStr.c_str(), NULL);
+                if (value > 1000 || std::isnan(value)) {
                     std::cerr << "Error: too large a number." << std::endl;
                     continue;                       // skip to the next line if invalid
                 }
@@ -58,24 +57,23 @@ void    BitcoinExchange::processInputFile(std::string const &filename) {
                     std::cerr << "Error: not a positive number." << std::endl;
                     continue;
                 }
-
                 // Find the closest date in exchangeRates that is not greater than the input date
                 std::map<std::string, std::string>::iterator it = _exchangeRates.lower_bound(date);
                 if (it != _exchangeRates.begin() && (it == _exchangeRates.end() || it->first != date)) {
-                    --it;  // If exact date not found, move to the previous date
+                    --it;  // if exact date not found, move to the previous date
                 }
 
                 if (it == _exchangeRates.end() || date < it->first) {
                     std::cerr << "Error: bad input => " << date << std::endl;
                 } else {
-                    float rate = std::stod(it->second);
+                    double rate = std::strtod(it->second.c_str(), NULL);
                     std::cout << date << " => " << value << " = " << (value * rate) << std::endl;
                 }
             } catch (...) {
                 std::cerr << "Error: invalid value format => " << valueStr << std::endl;
             }
         } else {
-            std::cerr << "Error: bad input format => " << line << std::endl;
+            std::cerr << "Error: bad input => " << line << std::endl;
         }
     }
 }
