@@ -6,7 +6,7 @@
 /*   By: omakran <omakran@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 20:39:53 by omakran           #+#    #+#             */
-/*   Updated: 2024/07/28 22:24:54 by omakran          ###   ########.fr       */
+/*   Updated: 2024/07/29 03:13:22 by omakran          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,41 @@ void    BitcoinExchange::loadExchangeRates(std::string const &filename) {
     file.close();
 }
 
+bool    monthFeb(int year) {
+    return (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)); // leap year
+}
+
+bool    parseDate(std::string const &date) {
+    std::string str(date);
+    std::istringstream s(str);
+    int     year, month, day;
+    char    sep;
+
+    if (s >> year >> sep && sep == '-' && s >> month >> sep && sep == '-' && s >> day){
+        if (s >> str)
+            return false;
+        if ((year < 2009 || year > 2022) || (month < 1 || month > 12) || (day < 1 || day > 31))
+            return false;
+        if (month == 2){
+            if (monthFeb(year))
+                return (day <= 29);
+            else
+                return (day <= 28);
+        }
+        if (month == 4 || month == 6 || month == 9 || month == 11)
+            return (day <= 30);
+        return true;
+    }
+    return false;
+}
+
+
+bool isValidNumber(const std::string& str) {
+    char* endptr = NULL; // to indicate where the parsing stopped in the input string
+    std::strtod(str.c_str(), &endptr);
+    return endptr != str.c_str() && *endptr == '\0'; // return true if the entire string was parsed
+}
+
 void    BitcoinExchange::processInputFile(std::string const &filename) {
     std::ifstream file(filename.c_str());
     if (!file.is_open()) {
@@ -55,6 +90,14 @@ void    BitcoinExchange::processInputFile(std::string const &filename) {
                 }
                 if (value < 0) {
                     std::cerr << "Error: not a positive number." << std::endl;
+                    continue;
+                }
+                if (!parseDate(date)) {
+                    std::cerr << "Error: invalid date format => " << date << std::endl;
+                    continue;
+                }
+                if (!isValidNumber(valueStr)) {
+                    std::cerr << "Error: is not a number " << std::endl;
                     continue;
                 }
                 // Find the closest date in exchangeRates that is not greater than the input date
