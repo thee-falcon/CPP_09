@@ -6,7 +6,7 @@
 /*   By: omakran <omakran@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 19:54:46 by omakran           #+#    #+#             */
-/*   Updated: 2024/08/04 20:46:03 by omakran          ###   ########.fr       */
+/*   Updated: 2024/08/04 21:51:58 by omakran          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,13 +128,20 @@ std::string PmergeMe::mergeSort(std::vector<long> vec) {
 
     // convert sorted vector to string
     std::ostringstream oss;
-    for (size_t i = 0; i < vec.size() && i < 6; ++i) {
-        oss << vec[i];
-        if (i < vec.size() - 1)
-            oss << " ";
+    if (vec.size() <= 5) {
+        for (size_t i = 0; i < vec.size(); ++i) {
+            oss << vec[i];
+            if (i < vec.size() - 1)
+                oss << " ";
+        }
+    } else {
+        for (size_t i = 0; i < 4; ++i) {
+            oss << vec[i];
+            if (i < 3)
+                oss << " ";
+        }
+        oss << " [...]"; // print only the first 6 elements
     }
-    if (vec.size() > 6)
-        oss << " [...]";
     return oss.str();  
 }
 
@@ -204,12 +211,19 @@ std::string PmergeMe::mergeSort(std::deque<long> deq) {
 
     // convert sorted deque to string
     std::ostringstream oss;
-    for (size_t i = 0; i < deq.size() && i < 6; ++i) {
-        oss << deq[i];
-        if (i < deq.size() - 1)
-            oss << " ";
+    if (deq.size() <= 5) {
+        for (size_t i = 0; i < deq.size(); ++i) {
+            oss << deq[i];
+            if (i < deq.size() - 1)
+                oss << " ";
+        }
+    } else {
+        for (size_t i = 0; i < 4; ++i) {
+            oss << deq[i];
+            if (i < 3)
+                oss << " ";
+        }
+        oss << " [...]"; // print only the first 6 elements
     }
-    if (deq.size() > 6)
-        oss << " [...]";
-    return oss.str();  
+    return oss.str();
 }
