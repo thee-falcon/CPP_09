@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omakran <omakran@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: omakran <omakran@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 19:54:43 by omakran           #+#    #+#             */
-/*   Updated: 2024/08/04 21:48:35 by omakran          ###   ########.fr       */
+/*   Updated: 2024/09/10 16:47:42 by omakran          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
         PmergeMe    p(argc, argv);
         std::cout << "Before: ";
         std::vector<long>   vec = p.getVec();
-        if (vec.size() <= 5){
+        if (vec.size() <= 5) {
             for (size_t i = 0; i < vec.size() && i < 5; i++) {
                 std::cout << vec[i] << " ";
             }

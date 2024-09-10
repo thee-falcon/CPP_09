@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omakran <omakran@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: omakran <omakran@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 19:54:46 by omakran           #+#    #+#             */
-/*   Updated: 2024/08/04 21:51:58 by omakran          ###   ########.fr       */
+/*   Updated: 2024/09/10 19:04:25 by omakran          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,65 +63,6 @@ PmergeMe::PmergeMe(int argc, char **argv) {
 }
 
 //      ---------------------------- Vector -----------------------------------
-void    PmergeMe::merge(std::vector<long>& vec, int left, int mid, int right) {
-    int n1 = mid - left + 1; // + 1 because the index starts from 0
-    int n2 = right - mid; // the size of the second half
-
-    // create temporary arrays
-    std::vector<long> L(n1);
-    std::vector<long> R(n2);
-
-    // copy data to temporary arrays L[] and R[]
-    for (int i = 0; i < n1; ++i)
-        L[i] = vec[left + i];
-    for (int i = 0; i < n2; ++i)
-        R[i] = vec[mid + 1 + i];
-
-    // merge the temporary arrays back into vec[left..right]
-    int i = 0;
-    int j = 0;
-    int k = left;
-
-    while (i < n1 && j < n2) {
-        if (L[i] <= R[j]) {
-            vec[k] = L[i];
-            ++i;
-        } else {
-            vec[k] = R[j];
-            ++j;
-        }
-        ++k;
-    }
-
-    // copy the remaining elements of L[], if there are any
-    while (i < n1) {
-        vec[k] = L[i];
-        ++i;
-        ++k;
-    }
-
-    // copy the remaining elements of R[], if there are any
-    while (j < n2) {
-        vec[k] = R[j];
-        ++j;
-        ++k;
-    }   
-}
-
-//      helper function to implement merge sort
-void    PmergeMe::mergeSortHelper(std::vector<long>& vec, int left, int right) {
-    if (left < right) {
-        int mid = left + (right - left) / 2;
-
-        // sort first and second halves
-        mergeSortHelper(vec, left, mid);
-        mergeSortHelper(vec, mid + 1, right);
-
-        // merge the sorted halves
-        merge(vec, left, mid, right);
-    }    
-}
-
 //          function to perform merge sort on a vector of long integers
 std::string PmergeMe::mergeSort(std::vector<long> vec) {
     mergeSortHelper(vec, 0, vec.size() - 1); // -1 because the last index is size - 1
@@ -142,10 +83,105 @@ std::string PmergeMe::mergeSort(std::vector<long> vec) {
         }
         oss << " [...]"; // print only the first 6 elements
     }
+    // return the sorted vector as a string
     return oss.str();  
 }
 
+//      helper function to implement merge sort
+void    PmergeMe::mergeSortHelper(std::vector<long>& vec, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        // sort first and second halves
+        mergeSortHelper(vec, left, mid);
+        mergeSortHelper(vec, mid + 1, right);
+
+        // merge the sorted halves
+        merge(vec, left, mid, right);
+    }    
+}
+
+void    PmergeMe::merge(std::vector<long>& vec, int left, int mid, int right) {
+    // n1 is the size of the first half
+    int n1 = mid - left + 1; // + 1 because the index starts from 0
+    int n2 = right - mid; // the size of the second half
+
+    // create temporary arrays
+    std::vector<long> L(n1);
+    std::vector<long> R(n2);
+
+    // copy data to temporary arrays L[] and R[]
+    for (int i = 0; i < n1; ++i)
+        L[i] = vec[left + i];
+    for (int i = 0; i < n2; ++i)
+        R[i] = vec[mid + 1 + i];
+
+    int i = 0;
+    int j = 0;
+    int k = left;
+    // sorting and merging
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            vec[k] = L[i];
+            ++i;
+        } else {
+            vec[k] = R[j];
+            ++j;
+        }
+        ++k;
+    }
+    // copy the remaining elements, if there are any to vec[]
+    while (i < n1) {
+        vec[k] = L[i];
+        ++i;
+        ++k;
+    }
+    // copy the remaining elements, if there are any to vec[]
+    while (j < n2) {
+        vec[k] = R[j];
+        ++j;
+        ++k;
+    }   
+}
+
 //      ---------------------------- Deque -----------------------------------
+//          function to perform merge sort on a deque of long integers
+std::string PmergeMe::mergeSort(std::deque<long> deq) {
+    mergeSortHelper(deq, 0, deq.size() - 1);
+
+    // convert sorted deque to string
+    std::ostringstream oss;
+    if (deq.size() <= 5) {
+        for (size_t i = 0; i < deq.size(); ++i) {
+            oss << deq[i];
+            if (i < deq.size() - 1)
+                oss << " ";
+        }
+    } else {
+        for (size_t i = 0; i < 4; ++i) {
+            oss << deq[i];
+            if (i < 3)
+                oss << " ";
+        }
+        oss << " [...]"; // print only the first 6 elements
+    }
+    return oss.str();
+}
+
+//      helper function to implement merge sort
+void    PmergeMe::mergeSortHelper(std::deque<long>& deq, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        // sort first and second halves
+        mergeSortHelper(deq, left, mid);
+        mergeSortHelper(deq, mid + 1, right);
+
+        // merge the sorted halves
+        merge(deq, left, mid, right);
+    }    
+}
+
 void    PmergeMe::merge(std::deque<long>& deq, int left, int mid, int right) {
     int n1 = mid - left + 1;
     int n2 = right - mid;
@@ -175,14 +211,12 @@ void    PmergeMe::merge(std::deque<long>& deq, int left, int mid, int right) {
         }
         ++k;
     }
-
     // copy the remaining elements of L[], if there are any
     while (i < n1) {
         deq[k] = L[i];
         ++i;
         ++k;
     }
-
     // copy the remaining elements of R[], if there are any
     while (j < n2) {
         deq[k] = R[j];
@@ -191,39 +225,3 @@ void    PmergeMe::merge(std::deque<long>& deq, int left, int mid, int right) {
     }   
 }
 
-//      helper function to implement merge sort
-void    PmergeMe::mergeSortHelper(std::deque<long>& deq, int left, int right) {
-    if (left < right) {
-        int mid = left + (right - left) / 2;
-
-        // sort first and second halves
-        mergeSortHelper(deq, left, mid);
-        mergeSortHelper(deq, mid + 1, right);
-
-        // merge the sorted halves
-        merge(deq, left, mid, right);
-    }    
-}
-
-//          function to perform merge sort on a deque of long integers
-std::string PmergeMe::mergeSort(std::deque<long> deq) {
-    mergeSortHelper(deq, 0, deq.size() - 1);
-
-    // convert sorted deque to string
-    std::ostringstream oss;
-    if (deq.size() <= 5) {
-        for (size_t i = 0; i < deq.size(); ++i) {
-            oss << deq[i];
-            if (i < deq.size() - 1)
-                oss << " ";
-        }
-    } else {
-        for (size_t i = 0; i < 4; ++i) {
-            oss << deq[i];
-            if (i < 3)
-                oss << " ";
-        }
-        oss << " [...]"; // print only the first 6 elements
-    }
-    return oss.str();
-}
